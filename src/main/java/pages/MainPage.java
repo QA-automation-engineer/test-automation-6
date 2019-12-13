@@ -16,7 +16,7 @@ public class MainPage {
 	private WebElement searchInput;
 	
 	@FindBy(xpath = "//*[@id='index']/div[@class='ac_results']/ul/li[1]")
-	@CacheLookup
+	//@CacheLookup don't cache everything
 	public WebElement firstTip;
 
 	public MainPage(WebDriver driver) {
