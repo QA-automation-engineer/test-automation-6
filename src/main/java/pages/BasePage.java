@@ -1,5 +1,7 @@
 package pages;
 
+import static pages.Condition.PRESENCE;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -15,9 +17,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * Created by Vladimir Trandafilov on 13.12.2019.
  */
 public abstract class BasePage {
-
-	protected final Function<By, ExpectedCondition<WebElement>> VISIBLE = ExpectedConditions::visibilityOfElementLocated;
-	protected final Function<By, ExpectedCondition<WebElement>> CLICKABLE = ExpectedConditions::elementToBeClickable;
 	
 	protected WebDriver driver;
 
@@ -29,9 +28,13 @@ public abstract class BasePage {
 	protected WebElement $(By locator, Function<By, ExpectedCondition<WebElement>> condition) {
 		return waitFor(condition.apply(locator));
 	}
+
+	protected WebElement $(By locator, Condition condition) {
+		return waitFor(condition.getCondition().apply(locator));
+	}
 	
 	protected WebElement $(By locator) {
-		return waitFor(ExpectedConditions.presenceOfElementLocated(locator));
+		return $(locator, PRESENCE);
 	}
 
 	protected WebElement $(String css) {

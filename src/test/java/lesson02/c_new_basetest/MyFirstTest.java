@@ -4,10 +4,14 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import pages.MainPage;
+import pages.NewMainPage;
 import test.BaseGUITest;
 
 /**
@@ -38,5 +42,17 @@ public class MyFirstTest extends BaseGUITest {
 		Assert.assertThat(secondTipText, CoreMatchers.containsString(secondQueryText));
 	}
 
-	
+	@Test
+	public void verifyFirstTipBecomesOverAfterClickOnArrowDown() {
+		// arrange
+		NewMainPage mainPage = new NewMainPage(driver);
+		final String queryText = "Dress";
+		// act
+		mainPage.searchFor(queryText);
+		String firstTipText = mainPage.getFirstTipText();
+		new Actions(driver).sendKeys(Keys.ARROW_DOWN).perform();
+		WebElement firstTip = mainPage.waitForHoverOnFirstTip();
+		// assertion
+		Assert.assertThat(firstTipText, CoreMatchers.containsString(queryText));
+	}
 }
