@@ -8,10 +8,12 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import api.BaseAPI;
+
 /**
  * Created by Vladimir Trandafilov on 13.12.2019.
  */
-public abstract class BaseGUITest extends BaseTest{
+public abstract class BaseGUITest extends BaseTest implements BaseAPI {
 	
 	protected WebDriver driver;
 	
@@ -26,5 +28,9 @@ public abstract class BaseGUITest extends BaseTest{
 	public void closeBrowser() {
 		driver.quit();
 	}
-	
+
+	@Override
+	public WebDriver getDriver() {
+		return driver;
+	}
 }
