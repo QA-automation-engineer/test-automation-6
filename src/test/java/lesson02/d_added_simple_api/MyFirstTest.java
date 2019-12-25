@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import pages.NewMainPage;
 import test.BaseGUITest;
 
 /**
@@ -29,5 +30,16 @@ public class MyFirstTest extends BaseGUITest {
 				o -> Assert.assertEquals("selenide - Пошук Google", getDriver().getTitle()),
 				o -> Assert.assertEquals("selenide", getDriver().getTitle())
 		);
+	}
+
+	@Test
+	public void verifyFacebookIntegration() {
+		// arrange
+		NewMainPage newMainPage = new NewMainPage(driver);
+		newMainPage.visit();
+		// act
+		newMainPage.moveToFacebook();
+		// assertion
+		Assert.assertEquals("My Store", (String) executeScript("return document.title;"));
 	}
 }

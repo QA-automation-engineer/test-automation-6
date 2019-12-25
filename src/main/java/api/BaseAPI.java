@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -90,5 +92,30 @@ public interface BaseAPI {
 	
 	default Actions getActions() {
 		return new Actions(getDriver());
+	}
+	
+	default JavascriptExecutor getJSExecutor() {
+		return (JavascriptExecutor) getDriver();
+	}
+
+	default Object executeScript(String js, Object... args){
+		return getJSExecutor().executeScript(js, args);
+	}
+
+	default Object executeAsyncScript(String js, Object... args) {
+		return getJSExecutor().executeAsyncScript(js, args);
+	}
+	
+	default void waitForDocumentCompleteState() {
+		try {
+			waitFor(driver -> {
+				String documentState = (String) ((JavascriptExecutor) driver)
+						.executeScript("return document.readyState");
+//				LOGGER.debug("Current document state is: {}", documentState);
+				return "complete".equals(documentState);
+			}, 30);
+		} catch (TimeoutException e) {
+//			LOGGER.warn("Can't wait till document.readyState is complete");
+		}
 	}
 }

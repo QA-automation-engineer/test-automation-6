@@ -32,4 +32,13 @@ public class NewMainPage extends BasePage {
 	public WebElement waitForHoverOnFirstTip() {
 		return waitFor(CustomConditions.attributeContains(firstTip, "class", "ac_over"));
 	}
+	
+	public void moveToFacebook() {
+		executeScript("arguments[0].scrollIntoView(true);", $("#facebook_block"));
+	}
+	
+	public void visit() {
+		open("http://automationpractice.com/index.php");
+		waitForDocumentCompleteState();
+	}
 }
