@@ -1,5 +1,10 @@
 package test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 import org.junit.Rule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -32,4 +37,24 @@ public abstract class BaseTest {
 			super.starting(description);
 		}
 	};
+	
+	protected void assertAll(Consumer<Boolean>... assertions) {
+		List<AssertionError> errors = new ArrayList<>();
+		
+		for(Consumer<Boolean> assertion : assertions) {
+			try {
+				assertion.accept(true);
+			} catch (AssertionError ae) {
+				errors.add(ae);
+			}
+		}
+		
+		assert errors.isEmpty() : errors
+				.stream()
+				.map(assertionError -> assertionError.getMessage().replace("java.lang.AssertionError:", ""))
+				.collect(Collectors.toList())
+				.toString();
+	}
+	
+	
 }
