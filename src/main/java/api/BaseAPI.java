@@ -2,7 +2,10 @@ package api;
 
 import static pages.Condition.CLICKABLE;
 import static pages.Condition.PRESENCE;
+import static pages.Condition.VISIBLE;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 
@@ -11,6 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -35,6 +40,22 @@ public interface BaseAPI {
 		return waitFor(condition.apply(locator));
 	}
 
+	default String getPageTitle() {
+		return getDriver().getTitle();
+	}
+
+	default void captureScreenshot(String methodName) {
+		File screenshot = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
+		String screenshotName = screenshot.getName().replace("screenshot", methodName + "_");
+		String path = System.getProperty("report.path") + "/screenshots/" + screenshotName;
+		try {
+			FileUtils.copyFile(screenshot, new File(path));
+			LOG.error("Screenshot was got: " + screenshotName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	default WebElement $(By locator, Condition condition) {
 		return waitFor(condition.getCondition().apply(locator));
 	}
@@ -57,6 +78,14 @@ public interface BaseAPI {
 
 	default void click(String css) {
 		click(By.cssSelector(css));
+	}
+
+	default String val(By locator) {
+		return $(locator, VISIBLE).getAttribute("value");
+	}
+
+	default String val(String css) {
+		return val(By.cssSelector(css));
 	}
 	
 	default void sendKeys(By locator, CharSequence... keys) {
