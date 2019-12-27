@@ -2,6 +2,8 @@ package utils;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,32 +14,34 @@ import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
  */
 public class EventHandler extends AbstractWebDriverEventListener {
 
+	private final Logger LOG = LogManager.getLogger(EventHandler.class);
+
 	@Override
 	public void beforeNavigateTo(String url, WebDriver driver) {
 		super.beforeNavigateTo(url, driver);
-		System.out.println("Browser going to navigate to: " + url);
+		LOG.info("Browser going to navigate to: {}", url);
 	}
 
 	@Override
 	public void beforeFindBy(By by, WebElement element, WebDriver driver) {
 		super.beforeFindBy(by, element, driver);
 		if(element == null) {
-			System.out.println("Finding element: " + by);
+			LOG.debug("Finding element: {}", by);
 		} else {
-			System.out.println("Finding element: " + by + " within root: " + getElementLocator(element));
+			LOG.debug("Finding element: {} within root: {}", by, getElementLocator(element));
 		}
 	}
 
 	@Override
 	public void beforeClickOn(WebElement element, WebDriver driver) {
 		super.beforeClickOn(element, driver);
-		System.out.println("Going to click on element: " + getElementLocator(element));
+		LOG.debug("Going to click on element: {}", getElementLocator(element));
 	}
 
 	@Override
 	public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
 		super.beforeChangeValueOf(element, driver, keysToSend);
-		System.out.println("Going to set value: " + Arrays.toString(keysToSend) + " for element: " + getElementLocator(element));
+		LOG.info("Going to set value: {} for element: {}", Arrays.toString(keysToSend), getElementLocator(element));
 	}
 
 	private String getElementLocator(WebElement element) {
