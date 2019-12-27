@@ -7,6 +7,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import uicontrols.Table;
+
 /**
  * Created by Vladimir Trandafilov on 13.12.2019.
  */
@@ -14,6 +16,7 @@ public class NewMainPage extends BasePage {
 	
 	private By searchInput = By.id("search_query_top");
 	public By firstTip = By.xpath("//*[@id='index']/div[@class='ac_results']/ul/li[1]");
+	private Table ordersTable = new Table(driver, By.id("order-list"));
 
 	public NewMainPage(WebDriver driver) {
 		super(driver);
@@ -40,5 +43,17 @@ public class NewMainPage extends BasePage {
 	public void visit() {
 		open("http://automationpractice.com/index.php");
 		waitForDocumentCompleteState();
+	}
+	
+	public String getRefNo(int rowNo) {
+		return ordersTable.getCell(1, rowNo).getText();
+	}
+
+	public String getDate(int rowNo) {
+		return ordersTable.getCell(2, rowNo).getText();
+	}
+
+	public String getPrice(int rowNo) {
+		return ordersTable.getCell(3, rowNo).getText();
 	}
 }
