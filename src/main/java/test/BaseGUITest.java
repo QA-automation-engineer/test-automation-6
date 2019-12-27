@@ -2,8 +2,11 @@ package test;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -16,6 +19,8 @@ import utils.EventHandler;
  * Created by Vladimir Trandafilov on 13.12.2019.
  */
 public abstract class BaseGUITest extends BaseTest implements BaseAPI {
+
+	private final Logger LOG = LogManager.getLogger(BaseGUITest.class);
 	
 	protected WebDriver driver;
 	
@@ -27,14 +32,39 @@ public abstract class BaseGUITest extends BaseTest implements BaseAPI {
 		driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 		driver.manage().window().setSize(new Dimension(1920,1080));
 	}
-	
-	@After
-	public void closeBrowser() {
-		driver.quit();
-	}
 
 	@Override
 	public WebDriver getDriver() {
 		return driver;
+	}
+
+	@Override
+	protected TestWatcher getWatcher() {
+		return new TestWatcher() {
+			@Override
+			protected void succeeded(final Description description) {
+				LOG.info("Test '{}' - PASSED\n", description.getMethodName());
+				super.succeeded(description);
+			}
+
+			@Override
+			protected void failed(final Throwable e, final Description description) {
+				captureScreenshot(description.getMethodName());
+				LOG.error("Test '{}' - FAILED\nReason: {}\n", description.getMethodName(), e.getMessage());
+				super.failed(e, description);
+			}
+
+			@Override
+			protected void starting(final Description description) {
+				LOG.info("Test '{}' - starting...", description.getMethodName());
+				super.starting(description);
+			}
+
+			@Override
+			protected void finished(Description description) {
+				super.finished(description);
+				driver.quit();
+			}
+		};
 	}
 }
