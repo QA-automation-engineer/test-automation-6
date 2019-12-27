@@ -6,6 +6,9 @@ import static pages.Condition.PRESENCE;
 import java.util.List;
 import java.util.function.Function;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
@@ -22,7 +25,10 @@ import pages.Condition;
  * Created by Vladimir Trandafilov on 20.12.2019.
  */
 public interface BaseAPI {
-	
+
+	Logger LOG = LogManager.getLogger(BaseAPI.class);
+
+
 	WebDriver getDriver();
 
 	default WebElement $(By locator, Function<By, ExpectedCondition<WebElement>> condition) {
@@ -111,11 +117,11 @@ public interface BaseAPI {
 			waitFor(driver -> {
 				String documentState = (String) ((JavascriptExecutor) driver)
 						.executeScript("return document.readyState");
-//				LOGGER.debug("Current document state is: {}", documentState);
+				LOG.debug("Current document state is: {}", documentState);
 				return "complete".equals(documentState);
 			}, 30);
 		} catch (TimeoutException e) {
-//			LOGGER.warn("Can't wait till document.readyState is complete");
+			LOG.warn("Can't wait till document.readyState is complete");
 		}
 	}
 }
