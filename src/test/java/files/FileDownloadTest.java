@@ -34,15 +34,14 @@ public class FileDownloadTest extends BaseGUITest {
 		File actualFile = fileDownloader.downloadFile();
 		int requestStatus = fileDownloader.getLastDownloadHTTPStatus();
 		// Then
-		assertAll(o -> Assert.assertThat("Check status.", requestStatus, is(200)),
-				o -> {
-					try {
-						Assert.assertThat(new PdfComparator(new File("IN090063.pdf"), actualFile)
-								.compare().writeTo("diffOutputOrder"), is(true));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				});
+		assertAll(o -> Assert.assertThat("Check status.", requestStatus, is(200)), o -> {
+			try {
+				Assert.assertThat(new PdfComparator(new File("IN090063.pdf"), actualFile).compare()
+						.writeTo("diffOutputOrder"), is(true));
+			} catch (IOException e) {
+				throw new AssertionError(e.getMessage());
+			}
+		});
 	}
 
 	@Test
@@ -59,14 +58,14 @@ public class FileDownloadTest extends BaseGUITest {
 		File actualFile = fileDownloader.downloadFile();
 		int requestStatus = fileDownloader.getLastDownloadHTTPStatus();
 		// Then
-		assertAll(o -> Assert.assertThat("Check status.", requestStatus, is(200)),
-				o -> {
-					try {
-						Assert.assertThat(new PdfComparator(new File("IN090057.pdf"), actualFile)
-								.compare().writeTo("diffOutputPass"), is(false));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				});
+		assertAll(o -> Assert.assertThat("Check status.", requestStatus, is(200)), o -> {
+			try {
+				Assert.assertThat(
+						new PdfComparator(new File("IN090057.pdf"), actualFile).compare().writeTo("diffOutputPass"),
+						is(false));
+			} catch (IOException e) {
+				throw new AssertionError(e.getMessage());
+			}
+		});
 	}
 }
